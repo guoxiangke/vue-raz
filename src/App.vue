@@ -26,7 +26,7 @@
                         :value="menu" aria-role="listitem">
                         <div class="media">
                             <div class="media-content">
-                                <h3 >Level {{menu}} </h3>
+                                <h3>Level {{menu}}</h3>
                             </div>
                         </div>
                     </b-dropdown-item>
@@ -72,40 +72,21 @@
       </div>
 
       <div class="column is-one-fifth panel">
+
           <div class="info">
             <h3>{{detail.title}}</h3>
-            <p>{{detail.subtle}}</p>
-          </div>
-          <div class="info">
-            <h3>High-Frequency Words</h3>
-            <p v-html="detail.highFrequencyWords"></p>
-          </div>
-          <div class="info">
-            <h3>Comprehension</h3>
-            <p>{{detail.comprehension}}</p>
-          </div>
-          <div class="info">
-            <h3>Phonological Awareness</h3>
-            <p>{{detail.awareness}}</p>
-          </div>
-          <div class="info">
-            <h3>Phonics</h3>
-            <p v-html="detail.phonics"></p>
-          </div>
-          <div class="info">
-            <h3>Grammar and Mechanics</h3>
-            <p v-html="detail.grammar"></p>
-          </div>
-          <div class="info">
-            <h3>Word Work</h3>
-            <p v-html="detail.wordWork"></p>
+            <p>{{detail.subtle}}, {{currentId}}</p>
           </div>
 
+          <div class="info" v-for="(title, index) in metaTitles" :key=index>
+            <h3>{{title}}</h3>
+            <p v-html="detail.meta[index]"></p>
+          </div>
           <div class="info">
             <h3>Lesson Resources</h3>
             <p><a :href="detail.lesson" target="_blank">Guided Reading Lesson</a></p>
             <p><a :href="detail.worksheet" target="_blank">All Worksheets</a></p>
-            <p>{{detail.description}}</p>
+            <p v-html="detail.description"></p>
           </div>
       </div>
     </div>
@@ -162,6 +143,15 @@ export default {
     )
   },
   computed:{
+    metaTitles(){
+      let titles = ["High-Frequency Words","Story Words","Reading Strategy","Comprehension","Phonological Awareness","Phonics","Grammar and Mechanics","Word Work"];
+      console.log(this.detail.meta.length )
+      if(this.detail.meta.length === 7){
+        titles.shift();
+      }
+      return titles;
+    }
+    ,
     pages(){
       const id = this.currentId
       const meta = this.pageData[id];
@@ -188,8 +178,8 @@ export default {
     },
     detail(){
       let detail = require("./assets/jsons/"+this.currentId+".json");
-      detail.worksheet = "https://cf.content.readinga-z.com/pdfsite/"+this.currentId+"/"+detail.pdfName+"_wksh.pdf";
-      detail.lesson = "https://cf.content.readinga-z.com/pdfsite/"+this.currentId+"/"+detail.pdfName+"_lblp.pdf";
+      detail.worksheet = "https://cf.content.readinga-z.com/pdfsite/"+this.currentId+"/"+detail.pdf+"_wksh.pdf";
+      detail.lesson = "https://cf.content.readinga-z.com/pdfsite/"+this.currentId+"/"+detail.pdf+"_lblp.pdf";
       return detail
     }
   },
@@ -201,10 +191,10 @@ export default {
       if(this.currentId !== id){
         this.currentId = id
         this.isLoading = true
+        this.forceRerender()
         setTimeout(() => {
           this.isLoading = false
-        },1000)
-        this.forceRerender()
+        },500)
       }
     },
     forceRerender() {
