@@ -35,16 +35,19 @@
             </div>
             <div class="panel-block">
               <p class="control has-icons-left">
-                <input class="input is-primary" type="text" placeholder="Search">
+                <input class="input is-primary" v-model="keyword" type="text" placeholder="Search">
                 <span class="icon is-left">
                   <i class="fas fa-search" aria-hidden="true"></i>
+                </span>
+                <span class="icon is-right" v-show="keyword"  @click="clearInput" >
+                  <i class="far fa-times-circle" aria-hidden="true"></i>
                 </span>
               </p>
             </div>
           </div>
 
           <div id="booklist">
-            <a @click="setId(book.id)" v-for="book in currentBooks" :key="book.id" class="panel-block" >
+            <a @click="setId(book.id)" v-for="book in currentBooks" :key="book.id" class="panel-block" :class="book.id==currentId?'active':''" >
               <span class="panel-icon">
                 <i class="fas fa-book" aria-hidden="true"></i>
               </span>
@@ -70,22 +73,12 @@
 
       <div class="column is-one-fifth panel">
           <div class="info">
-            <h3>{{detail.subtle}}</h3>
-            <p>{{detail.description}}</p>
-          </div>
-
-          <div class="info">
-            <h3>Lesson Resources</h3>
-            <p><a :href="detail.lesson" target="_blank">Guided Reading Lesson</a></p>
-            <p><a :href="detail.worksheet" target="_blank">All WorksheetsPDF</a></p>
+            <h3>{{detail.title}}</h3>
+            <p>{{detail.subtle}}</p>
           </div>
           <div class="info">
             <h3>High-Frequency Words</h3>
-              <p>{{detail.highFrequencyWords}}</p>
-          </div>
-          <div class="info">
-            <h3>Words</h3>
-            <p>{{detail.reviewWords}}</p>
+            <p v-html="detail.highFrequencyWords"></p>
           </div>
           <div class="info">
             <h3>Comprehension</h3>
@@ -106,6 +99,13 @@
           <div class="info">
             <h3>Word Work</h3>
             <p v-html="detail.wordWork"></p>
+          </div>
+
+          <div class="info">
+            <h3>Lesson Resources</h3>
+            <p><a :href="detail.lesson" target="_blank">Guided Reading Lesson</a></p>
+            <p><a :href="detail.worksheet" target="_blank">All Worksheets</a></p>
+            <p>{{detail.description}}</p>
           </div>
       </div>
     </div>
@@ -140,6 +140,7 @@ export default {
         isScrollable: true,
         maxHeight: 500,
         currentMenu: "aa",
+        keyword:"",
         currentId: 2917,
         menus: ["aa","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","Z1","Z2"],
     }
@@ -173,7 +174,13 @@ export default {
     },
     currentBooks(){
       return this.raz.filter((item)=>{
-        return item.level == this.currentMenu
+        if(this.keyword){
+          var re = new RegExp(this.keyword, 'i');
+          return item.level == this.currentMenu && item.title.match(re)
+        }else{
+          return item.level == this.currentMenu
+        }
+        
       })
     },
     currentLevelCount(){
@@ -187,6 +194,9 @@ export default {
     }
   },
   methods:{
+    clearInput(){
+      this.keyword = ''
+    },
     setId(id){
       if(this.currentId !== id){
         this.currentId = id
@@ -218,7 +228,7 @@ export default {
 #booklist {
   max-height: 95%;
   overflow-y: scroll;
-  padding-top: 120px;
+  padding-top: 125px;
 }
 #header{
   position: fixed;
@@ -230,5 +240,14 @@ export default {
 }
 .info h3{
   font-weight: bold;
+}
+.is-right{
+  right: 0;
+}
+.control.has-icons-left .icon.is-right{
+      pointer-events: auto;
+}
+#booklist .active{
+  background: #ededed;
 }
 </style>
