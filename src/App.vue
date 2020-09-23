@@ -6,14 +6,13 @@
         <article class="panel is-link">
           <div id="header">
             <div class="panel-heading" slot="trigger">
-              Reading A-Z
+              <img src="./assets/logo-readinga-z.svg" class="logo" alt="Reading A-Z" draggable="false">
                 <b-dropdown
                     :scrollable="isScrollable"
                     :max-height="maxHeight"
                     v-model="currentMenu"
                     aria-role="list"
                     :triggers="['hover']"
-                    class="is-success"
                 >
                 <button class="button has-background-light" slot="trigger">
                     <span>Level {{currentMenu}}</span>
@@ -72,10 +71,9 @@
       </div>
 
       <div class="column is-one-fifth panel">
-
           <div class="info">
-            <h3>{{detail.title}}</h3>
-            <p>{{detail.subtle}}, {{currentId}}</p>
+            <h3>{{detail.title}} ({{currentId}})</h3>
+            <p v-html="detail.subtle"></p>
           </div>
 
           <div class="info" v-for="(title, index) in metaTitles" :key=index>
@@ -84,8 +82,16 @@
           </div>
           <div class="info">
             <h3>Lesson Resources</h3>
-            <p><a :href="detail.lesson" target="_blank">Guided Reading Lesson</a></p>
-            <p><a :href="detail.worksheet" target="_blank">All Worksheets</a></p>
+            <p v-if="lblp"><a :href="lblp" target="_blank">Guided Reading Lesson</a></p>
+            <p v-if="wksh"><a :href="wksh" target="_blank">All Worksheets</a></p>
+            <p v-if="quiz"><a :href="quiz" target="_blank">Comprehension Quiz</a></p>
+            <p v-if="discussion"><a :href="discussion" target="_blank">Discussion Cards</a></p>
+            <p v-if="clr"><a :href="clr" target="_blank">Double-Sided Book</a></p>
+            
+            <p v-for="post in nonbooks" :key="post.id">
+              <a :href="post" target="_blank">Poster/Nonbooks {{post.id}} </a>
+            </p>
+
             <p v-html="detail.description"></p>
           </div>
       </div>
@@ -145,9 +151,11 @@ export default {
   computed:{
     metaTitles(){
       let titles = ["High-Frequency Words","Story Words","Reading Strategy","Comprehension","Phonological Awareness","Phonics","Grammar and Mechanics","Word Work"];
-      console.log(this.detail.meta.length )
       if(this.detail.meta.length === 7){
         titles.shift();
+      }
+      if(this.detail.meta.length === 9){
+        titles.push('Think, Collaborate, Discuss');
       }
       return titles;
     }
@@ -181,6 +189,57 @@ export default {
       detail.worksheet = "https://cf.content.readinga-z.com/pdfsite/"+this.currentId+"/"+detail.pdf+"_wksh.pdf";
       detail.lesson = "https://cf.content.readinga-z.com/pdfsite/"+this.currentId+"/"+detail.pdf+"_lblp.pdf";
       return detail
+    },
+    clr(){
+      if(this.detail.mis.clr){
+        return "https://mi.content.readinga-z.com/" + this.detail.mis.clr;
+      }else{
+        return false;
+      }
+    },
+    lblp(){
+      if(this.detail.mis.lblp){
+        return "https://mi.content.readinga-z.com/" + this.detail.mis.lblp;
+      }else{
+        return false;
+      }
+    },
+    wksh(){
+      if(this.detail.pdfs && this.detail.pdfs[0] && this.detail.pdfs[0].endsWith('_wksh.pdf')){
+        return "https://mi.content.readinga-z.com/" + this.detail.pdfs[0];
+      }
+      return false;
+    },
+    quiz(){
+      let re = false;
+      this.detail.pdfs.forEach(el=>{
+        if(el.includes('quiz')){
+          re =  "https://mi.content.readinga-z.com/" + el;
+          return false; 
+        }
+        
+      })
+      return re;
+    },
+    nonbooks(){
+      let re = [];
+      this.detail.pdfs.forEach(el=>{
+        if(el.includes('nonbooks')){
+          re.push("https://mi.content.readinga-z.com/" + el);
+        }
+      })
+      return re;
+    },
+    discussion(){
+      let re = false;
+      this.detail.pdfs.forEach(el=>{
+        if(el.includes('discussion')){
+          re =  "https://mi.content.readinga-z.com/" + el;
+          return false; 
+        }
+        
+      })
+      return re;
     }
   },
   methods:{
@@ -239,5 +298,9 @@ export default {
 }
 #booklist .active{
   background: #ededed;
+}
+.logo{
+  width: 120px;
+  margin-right: 10px;
 }
 </style>
