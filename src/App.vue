@@ -192,14 +192,14 @@ export default {
     },
     clr(){
       if(this.detail.mis.clr){
-        return "https://mi.content.readinga-z.com/" + this.detail.mis.clr;
+        return "https://content.readinga-z.com/" + this.detail.mis.clr;
       }else{
         return false;
       }
     },
     lblp(){
       if(this.detail.mis.lblp){
-        return "https://mi.content.readinga-z.com/" + this.detail.mis.lblp;
+        return "https://content.readinga-z.com/" + this.detail.mis.lblp;
       }else{
         return false;
       }
@@ -214,7 +214,7 @@ export default {
       let re = false;
       this.detail.pdfs.forEach(el=>{
         if(el.includes('quiz')){
-          re =  "https://mi.content.readinga-z.com/" + el;
+          re =  "https://content.readinga-z.com/" + el;
           return false; 
         }
         
@@ -225,7 +225,7 @@ export default {
       let re = [];
       this.detail.pdfs.forEach(el=>{
         if(el.includes('nonbooks')){
-          re.push("https://mi.content.readinga-z.com/" + el);
+          re.push("https://content.readinga-z.com/" + el);
         }
       })
       return re;
@@ -234,7 +234,7 @@ export default {
       let re = false;
       this.detail.pdfs.forEach(el=>{
         if(el.includes('discussion')){
-          re =  "https://mi.content.readinga-z.com/" + el;
+          re =  "https://content.readinga-z.com/" + el;
           return false; 
         }
         
