@@ -206,7 +206,7 @@ export default {
     },
     wksh(){
       if(this.detail.pdfs && this.detail.pdfs[0] && this.detail.pdfs[0].endsWith('_wksh.pdf')){
-        return "https://mi.content.readinga-z.com/" + this.detail.pdfs[0];
+        return "https://content.readinga-z.com/" + this.detail.pdfs[0];
       }
       return false;
     },
