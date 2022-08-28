@@ -166,7 +166,7 @@ export default {
       let pages = []
       for (let index = 0; index < meta.count; index++) {
         const i = index + meta.from;
-        pages.push('https://mi.content.readinga-z.com/raz_book_image/'+id+'/projectable/large/1/book/page-'+i+'.jpg')
+        pages.push('https://content.readinga-z.com/raz_book_image/'+id+'/projectable/large/1/book/page-'+i+'.jpg')
       }
       return pages
     },
